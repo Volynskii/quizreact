@@ -1,38 +1,138 @@
-.App {
-  text-align: center;
+@font-face {
+  font-family: 'RF Dewi';
+  src: local('RF Dewi'), url(fonts/RFDewi-Regular.ttf) format('truetype');
+  font-weight: 400;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+@font-face {
+  font-family: 'RF Dewi';
+  src: local('RF Dewi'), url(fonts/RFDewi-Semibold.ttf) format('truetype');
+  font-weight: 600;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+@font-face {
+  font-family: 'RF Dewi';
+  src: local('RF Dewi'), url(fonts/RFDewi-Bold.ttf) format('truetype');
+  font-weight: bold;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+
+
+.quiz {
+  background: #F5F9FD;
+  border-radius: 8px;
 }
 
-.App-link {
-  color: #61dafb;
+.progressBar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  height: 4px;
+  background: #fff;
+  z-index: inherit;
+  border-radius: 8px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.progressBar__filled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: #E3000B;
+  border-radius: 8px;
+}
+
+.question-picture-container {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+}
+
+.question-text {
+  font: 24px / 32px 'New York Medium Bold', serif;
+  text-align: left;
+  position: relative;
+  padding: 28px 30px 25px 30px;
+}
+
+.question-answers {
+  margin: 0 !important;
+  padding: 0 16px 32px 16px !important;
+  list-style: none !important;
+  position: relative;
+  color: #000000;
+  border-radius: 0 0 8px 8px;
+}
+
+.question-answer {
+  position: relative;
+  padding: 0 0 4px 0;
+}
+
+.question-answer:before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #EBF3FA;
+  border-radius: 8px;
+}
+
+img {
+  object-fit: cover;
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+}
+
+
+.answer-container-text {
+  font-size: 16px;
+  line-height: 20px;
+  display: block;
+  position: relative;
+  padding: 16px 10px 8px 50px;
+  cursor: pointer;
+  font-weight: bold;
+  font-family: 'RF Dewi', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.control {
+  overflow: hidden;
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  content: "";
+  box-sizing: border-box;
+  border-radius: 20px;
+  border: 2px solid #E3000B;
+}
+
+input {
+  display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+input {
+  border: none;
+  background: none;
 }
