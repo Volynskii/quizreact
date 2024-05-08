@@ -9,7 +9,7 @@ const QuestionAnswerItem = ({ id, title, correctId, selectedOption, index, optio
             key={id}>
             <input type="radio" id={id} name="answer" value={title}
                    onChange={() => handleOptionSelectAndSubmit(id, index)}
-                   checked={selectedOption === title} disabled={optionsDisabled[index]} />
+                   checked={selectedOption === title} disabled={optionsDisabled} />
             <label htmlFor={id} className="answer-container-text">
                 <i className="control"></i>
                 <span className="answer text">{title}</span>

@@ -10,6 +10,7 @@ import styles from '../App.scss';
 import Question from "../components/question/question";
 import QuestionPicture from "../components/questionPicture/questionPicture";
 import ProgressBar from "../components/progressBar/progressBar";
+import scrollToTop from "../utils/helpers/scrollTop";
 
 function QuizApp() {
     const [correctId, setCorrectId] = useState('');
@@ -22,7 +23,7 @@ function QuizApp() {
     const [error, setError] = useState(null);
 
     const quizId = window.location.pathname.split("/")[1];
-    const { sendRequest } = useApiRequests();
+    const {sendRequest} = useApiRequests();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,9 +31,14 @@ function QuizApp() {
                 const url = `https://quiz.vgtrk.com/index.php?action=data&id=${quizId}`;
                 const response = await sendRequest(url);
                 const quizData = response.data.quiz_q;
-                setQuizData(quizData);
-                setQuestionsLength(quizData.length);
-                setIsLoading(false);
+                if (response.data.isCompetition === '0') {
+                    setQuizData(quizData);
+                    setQuestionsLength(quizData.length);
+                    setIsLoading(false);
+                } else {
+                    return <LoadingSpinner/>
+                }
+
             } catch (error) {
                 setError('Error fetching quiz data');
                 setIsLoading(false);
@@ -75,14 +81,15 @@ function QuizApp() {
         setCurrentQuestion(prev => prev + 1);
         setSelectedOption('');
         setOptionsDisabled(Array(4).fill(false));
+        scrollToTop();
     };
 
     if (isLoading) {
-        return <LoadingSpinner />;
+        return <LoadingSpinner/>;
     }
 
     if (error) {
-        return <ErrorMessage message={error} />;
+        return <ErrorMessage message={error}/>;
     }
 
     const progressBarWidth = calculateProgressBarWidth(currentQuestion + 1, questionsLength);
@@ -91,18 +98,18 @@ function QuizApp() {
         <div className="quiz">
             <ProgressBar progressBarWidth={progressBarWidth}/>
             <QuestionPicture imageUrl={quizData[currentQuestion]?.pictures?.sizes?.xw?.url}/>
-                <Question title={quizData[currentQuestion]?.title}/>
-                <QuestionAnswersList
-                    quizData={quizData}
-                    currentQuestion={currentQuestion}
-                    correctId={correctId}
-                    selectedOption={selectedOption}
-                    optionsDisabled={optionsDisabled}
-                    handleOptionSelectAndSubmit={handleOptionSelectAndSubmit}
-                />
-                {selectedOption !== '' && (
-                    <SubmitButton onClick={handleNextQuestion} />
-                )}
+            <Question title={quizData[currentQuestion]?.title}/>
+            <QuestionAnswersList
+                quizData={quizData}
+                currentQuestion={currentQuestion}
+                correctId={correctId}
+                selectedOption={selectedOption}
+                optionsDisabled={optionsDisabled}
+                handleOptionSelectAndSubmit={handleOptionSelectAndSubmit}
+            />
+            {selectedOption !== '' && (
+                <SubmitButton onClick={handleNextQuestion}/>
+            )}
         </div>
     );
 }

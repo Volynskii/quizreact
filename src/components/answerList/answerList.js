@@ -6,6 +6,7 @@ const QuestionAnswersList = ({ quizData, currentQuestion, correctId, selectedOpt
         <ul className="question-answers">
             {quizData[currentQuestion]?.quiz_a.map(({ title, id }, index) => (
                 <QuestionAnswerItem
+                    key={id}
                     id={id}
                     title={title}
                     correctId={correctId}
