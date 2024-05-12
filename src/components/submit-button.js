@@ -5,7 +5,7 @@ const SubmitButton = ({ onClick }) => {
     const myComponentRef = useRef(null);
 
     const scrollToComponent = () => {
-        console.log('scroll!')
+
         if (myComponentRef.current) {
             myComponentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }

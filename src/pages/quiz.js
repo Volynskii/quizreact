@@ -18,43 +18,66 @@ function QuizApp() {
     const [currentQuestion, setCurrentQuestion] = useState(5);
     const [selectedOption, setSelectedOption] = useState('');
     const [questionsLength, setQuestionsLength] = useState(0);
-    const [optionsDisabled, setOptionsDisabled] = useState(Array(4).fill(false));
+    const [optionsDisabled, setOptionsDisabled] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const progressBarWidth = calculateProgressBarWidth(currentQuestion + 1, questionsLength);
+    console.log('questionsLength',questionsLength)
 
     const quizId = window.location.pathname.split("/")[1];
     const {sendRequest} = useApiRequests();
 
+    console.log('selectedOption',selectedOption)
     useEffect(() => {
         const fetchData = async () => {
+
             try {
                 const url = `https://quiz.vgtrk.com/index.php?action=data&id=${quizId}`;
                 const response = await sendRequest(url);
                 const quizData = response.data.quiz_q;
                 if (response.data.isCompetition === '0') {
-                    setQuizData(quizData);
-                    setQuestionsLength(quizData.length);
-                    setIsLoading(false);
+                    setQuizData(()=> quizData);
+                    setQuestionsLength(()=> quizData.length);
+                    setIsLoading(()=> false);
                 } else {
                     return <LoadingSpinner/>
                 }
 
             } catch (error) {
-                setError('Error fetching quiz data');
-                setIsLoading(false);
+                setError(()=> 'Error fetching quiz data');
+                setIsLoading(()=> false);
             }
         };
 
         fetchData();
-    }, [quizId, sendRequest]);
+    }, [quizId]);
 
-    // Define an async function to handle the option select and submission
-    const handleOptionSelectAndSubmit = async (option, index) => {
-        setSelectedOption(option);
-        setOptionsDisabled(prevState => prevState.map((val, i) => i === index ? true : val));
+    useEffect(()=> {
+        if (currentQuestion === questionsLength - 1) {
+            console.log('final question!')
+        }
+    },[])
+
+    // useEffect( ()=> {
+    //    const HandleSubmit = async () => {
+    //        if (selectedOption) {
+    //            try {
+    //                const uid = await fetchCookie(); // Fetch cookie
+    //                await submitAnswer(selectedOption, uid); // Submit answer with the fetched cookie
+    //            } catch (error) {
+    //                console.error('Error handling option select and submit:', error);
+    //            }
+    //        }
+    //    }
+    //    HandleSubmit();
+    // },[selectedOption])
+
+    const handleSelect = async (option) => {
+        setSelectedOption(()=> option);
+        setOptionsDisabled(()=> true);
         try {
             const uid = await fetchCookie(); // Fetch cookie
-            await submitAnswer(option, uid); // Submit answer with the fetched cookie
+            await submitAnswer(selectedOption, uid); // Submit answer with the fetched cookie
         } catch (error) {
             console.error('Error handling option select and submit:', error);
         }
@@ -71,6 +94,7 @@ function QuizApp() {
                 "action": "answer"
             });
 
+            console.log('response!', response)
             setCorrectId(response.data.correct[0]);
         } catch (error) {
             console.error('Error submitting answer:', error);
@@ -80,7 +104,7 @@ function QuizApp() {
     const handleNextQuestion = () => {
         setCurrentQuestion(prev => prev + 1);
         setSelectedOption('');
-        setOptionsDisabled(Array(4).fill(false));
+        setOptionsDisabled(false);
         scrollToTop();
     };
 
@@ -91,8 +115,6 @@ function QuizApp() {
     if (error) {
         return <ErrorMessage message={error}/>;
     }
-
-    const progressBarWidth = calculateProgressBarWidth(currentQuestion + 1, questionsLength);
 
     return (
         <div className="quiz">
@@ -105,7 +127,7 @@ function QuizApp() {
                 correctId={correctId}
                 selectedOption={selectedOption}
                 optionsDisabled={optionsDisabled}
-                handleOptionSelectAndSubmit={handleOptionSelectAndSubmit}
+                handleSelect={handleSelect}
             />
             {selectedOption !== '' && (
                 <SubmitButton onClick={handleNextQuestion}/>

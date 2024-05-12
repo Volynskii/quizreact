@@ -1,7 +1,8 @@
 import React from 'react';
 import QuestionAnswerItem from "../answerItem/answerItem";
 
-const QuestionAnswersList = ({ quizData, currentQuestion, correctId, selectedOption, optionsDisabled, handleOptionSelectAndSubmit }) => {
+const QuestionAnswersList = ({ quizData, currentQuestion, correctId, selectedOption, optionsDisabled, handleSelect }) => {
+
     return (
         <ul className="question-answers">
             {quizData[currentQuestion]?.quiz_a.map(({ title, id }, index) => (
@@ -13,7 +14,7 @@ const QuestionAnswersList = ({ quizData, currentQuestion, correctId, selectedOpt
                     selectedOption={selectedOption}
                     index={index}
                     optionsDisabled={optionsDisabled}
-                    handleOptionSelectAndSubmit={handleOptionSelectAndSubmit}
+                    handleSelect={handleSelect}
                 />
             ))}
         </ul>
