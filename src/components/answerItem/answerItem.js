@@ -1,13 +1,19 @@
 import React from 'react';
+import classNames from 'classnames';
 
 const QuestionAnswerItem = ({ id, title, correctId, selectedOption, index, optionsDisabled, handleSelect }) => {
 
+    const getAnswerClasses = () => {
+        let classes = ['question-answer'];
+        if (id === correctId) classes.push('question-answer-correct');
+        if (id !== correctId && id === selectedOption) classes.push('question-answer-wrong');
+        if (id === selectedOption) classes.push('selected');
+        if (optionsDisabled[index]) classes.push('disabled');
+        return classes.join(' ');
+    };
+
     return (
-        <li className={`question-answer ${id === correctId ? 'question-answer-correct' : ''}
-                         ${id !== correctId && id === selectedOption ? 'question-answer-wrong' : ''} 
-                         ${id === selectedOption ? 'selected' : ''} 
-                         ${optionsDisabled[index] ? 'disabled' : ''}`}
-            key={id}>
+        <li className={getAnswerClasses()} key={id}>
             <input type="radio" id={id} name="answer" value={title}
                    onChange={() => handleSelect(id, index)}
                    checked={selectedOption === title} disabled={optionsDisabled} />
@@ -20,3 +26,4 @@ const QuestionAnswerItem = ({ id, title, correctId, selectedOption, index, optio
 };
 
 export default QuestionAnswerItem;
+

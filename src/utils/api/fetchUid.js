@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const fetchCookie = async () => {
+const fetchUid = async () => {
     try {
         const url = 'https://quiz.vgtrk.com/?action=auth';
         const response = await axios.post(url);
@@ -14,4 +14,4 @@ const fetchCookie = async () => {
     }
 }
 
-export default fetchCookie;
+export default fetchUid;
