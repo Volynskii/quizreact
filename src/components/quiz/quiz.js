@@ -12,29 +12,40 @@ import QuestionPicture from "../questionPicture/questionPicture";
 import ProgressBar from "../progressBar/progressBar";
 import scrollToTop from "../../utils/helpers/scrollTop";
 import Cookies from 'js-cookie';
+import Finish from "../finish/finish";
+import PlayAgain from "../playAgain/playAgain";
 
-function Quiz({data}) {
-    console.log('data!',data)
+function Quiz({ data }) {
+    console.log('data!', data)
+    const [isPlayAgain,setIsPlayAgain] = useState(false)
+    const cookieUid = Cookies.get('quiz_uid');
     const quizId = window.location.pathname.split("/")[1];
     const initialQuestion = Cookies.get(`quiz_id_${quizId}`) || 0;
     const [correctId, setCorrectId] = useState('');
     const [uid, setUid] = useState('');
     const [quizData, setQuizData] = useState(data.data.quiz_q);
-    const [currentQuestion, setCurrentQuestion] = useState(parseInt(initialQuestion));
+    const [currentQuestion, setCurrentQuestion] = useState(initialQuestion);
     const [selectedOption, setSelectedOption] = useState('');
-    const [questionsLength, setQuestionsLength] = useState(data.data.quiz_q);
+    const [questionsLength, setQuestionsLength] = useState(data.data.quiz_q.length);
     const [optionsDisabled, setOptionsDisabled] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isFinished, setIsFinished] = useState(false); // Новое состояние
     const progressBarWidth = useMemo(() => {
         return calculateProgressBarWidth(currentQuestion + 1, questionsLength);
     }, [currentQuestion, questionsLength]);
 
     const { sendRequest } = useApiRequests();
+    const [result,setResult] = useState(null);
+
+    const HandleFirstQuestion = (question) => {
+        setCurrentQuestion(question)
+        setIsPlayAgain(false)
+    }
+    console.log('current question!', currentQuestion)
 
     useEffect(() => {
         const checkUidInCookie = () => {
-            const cookieUid = Cookies.get('quiz_uid');
             if (cookieUid) {
                 setUid(cookieUid);
             } else {
@@ -52,15 +63,29 @@ function Quiz({data}) {
     }, [quizId]);
 
     useEffect(() => {
-        if (currentQuestion === questionsLength - 1) {
+        if (currentQuestion === questionsLength) {
             console.log('final question!')
-            finish()
+            finish();
+        }
 
+        if (currentQuestion === 'start') {
+            setIsPlayAgain(true)
         }
     }, [selectedOption]);
 
     useEffect(() => {
-        Cookies.set(`quiz_id_${quizId}`, currentQuestion);
+        if (currentQuestion === questionsLength && quizId) {
+            console.log('final question!')
+            console.log('currentQuestion === questionsLength',currentQuestion === questionsLength)
+            console.log('quizId',quizId)
+            Cookies.set(`quiz_id_${quizId}`, 'start');
+        }
+        else {
+            // if(Cookies.get(`quiz_id_${quizId}`) !== 'start') {
+                console.log('worked this 2!', currentQuestion)
+                Cookies.set(`quiz_id_${quizId}`, currentQuestion);
+            // }
+        }
     }, [currentQuestion]);
 
     const handleSelect = async (option) => {
@@ -75,15 +100,16 @@ function Quiz({data}) {
 
     const submitAnswer = async (option) => {
         try {
-            const url = 'https://quiz.vgtrk.com/';
+            setIsLoading(true)
+            const url = 'http://quiz.imolchanov.dev.rfn.ru/';
             const response = await sendRequest(url, 'POST', {
                 "quiz_id": quizId,
                 "quest_id": quizData[currentQuestion].id,
-                "uid": uid,
+                "uid":  uid,
                 "answers[]": option,
                 "action": "answer"
             });
-
+            setIsLoading(false)
             setCorrectId(response.data.correct[0]);
         } catch (error) {
             console.error('Ошибка отправки ответа:', error);
@@ -92,21 +118,25 @@ function Quiz({data}) {
 
     const finish = async () => {
         try {
-            const url = 'https://quiz.vgtrk.com/';
-            const response = await sendRequest(url, 'POST', {
+            const url = 'http://quiz.imolchanov.dev.rfn.ru/';
+            const post = {
                 "quiz_id": quizId,
-                "uid": uid,
+                "uid": cookieUid || uid,
                 "action": "finish",
                 "referer": window.location.href
-            });
-            console.log('response!', response)
+            }
+            console.log('post!', post)
+            const response = await sendRequest(url, 'POST', post);
+            console.log('response!', response);
+            setResult(response);
+            setIsFinished(true); // Устанавливаем isFinished в true
         } catch (error) {
             console.error('Ошибка отправки ответа:', error);
         }
     };
 
     const handleNextQuestion = () => {
-        setCurrentQuestion(prev => prev + 1);
+        setCurrentQuestion(prev => Number(prev) + 1);
         setSelectedOption('');
         setOptionsDisabled(false);
         scrollToTop();
@@ -118,6 +148,14 @@ function Quiz({data}) {
 
     if (error) {
         return <ErrorMessage message={error} />;
+    }
+
+    if (isFinished) {
+        return <Finish result={result}/>
+    }
+
+    if (isPlayAgain) {
+        return <PlayAgain HandleFirstQuestion={HandleFirstQuestion}/>
     }
 
     return (
@@ -135,8 +173,8 @@ function Quiz({data}) {
                         optionsDisabled={optionsDisabled}
                         handleSelect={handleSelect}
                     />
-                    {selectedOption !== '' && (
-                        <SubmitButton onClick={handleNextQuestion} />
+                    {selectedOption !== '' && !isLoading && (
+                        <SubmitButton onClick={handleNextQuestion} text={'Следующий вопрос »'} />
                     )}
                 </div>
             )}

@@ -180,7 +180,29 @@ input {
 }
 
 
+.quiz__result-description {
+  font: 24px / 32px 'New York Medium Bold', serif;
+  padding: 33px 20px 0 33px;
+  color: #000000;
+}
 
+.quiz__warning {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding-bottom: 32px;
+  padding-top: 32px;
+  text-align: center;
+  background: #E3000B;
+  color: #ffffff;
+  border-radius: 8px;
+
+  button {
+    background: #FFFFFF;
+    color: #000000;
+    margin: 0;
+  }
+}
 
 
 

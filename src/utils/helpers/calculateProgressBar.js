@@ -1,3 +1,3 @@
 export const calculateProgressBarWidth = (currentQuestion, totalQuestions) => {
-    return (currentQuestion / totalQuestions.length) * 100;
+    return (currentQuestion / totalQuestions) * 100;
 };

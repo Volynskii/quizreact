@@ -4,7 +4,7 @@ const Contest = ({data}) => {
     console.log('data!', data)
     return (
         <div>
-            
+            contest
         </div>
     );
 };

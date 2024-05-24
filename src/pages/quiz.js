@@ -19,10 +19,10 @@ function QuizApp() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const url = `https://quiz.vgtrk.com/index.php?action=data&id=${quizId}`;
+                const url = `http://quiz.imolchanov.dev.rfn.ru/index.php?action=data&id=${quizId}`;
                 const response = await sendRequest(url);
                 const quizData = response.data.quiz_q;
-                console.log('response!', response);
+
 
                 // Проверяем наличие картинок в ответах всех вопросов
                 const hasPictures = quizData.some(question =>
@@ -30,9 +30,9 @@ function QuizApp() {
                 );
 
                 if (hasPictures) {
-                    setType('0');
-                } else {
                     setType('1');
+                } else {
+                    setType('0');
                 }
 
                 setIsCompetition(response.data.isCompetition);
