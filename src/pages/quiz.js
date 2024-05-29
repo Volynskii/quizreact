@@ -4,6 +4,7 @@ import LoadingSpinner from "../components/loadingSpinner/loadingSpinner";
 import styles from '../App.scss';
 import Quiz from "../components/quiz/quiz";
 import Contest from "../components/contest/contest";
+import {BASE_URL} from "../utils/config";
 
 function QuizApp() {
     const quizId = window.location.pathname.split("/")[1];
@@ -19,7 +20,7 @@ function QuizApp() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const url = `http://quiz.imolchanov.dev.rfn.ru/index.php?action=data&id=${quizId}`;
+                const url = `${BASE_URL}index.php?action=data&id=${quizId}`;
                 const response = await sendRequest(url);
                 const quizData = response.data.quiz_q;
 

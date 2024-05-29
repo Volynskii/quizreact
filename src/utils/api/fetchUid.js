@@ -1,8 +1,9 @@
 import axios from "axios";
+import { BASE_URL } from "../config";
 
 const fetchUid = async () => {
     try {
-        const url = 'http://quiz.imolchanov.dev.rfn.ru/?action=auth';
+        const url = `${BASE_URL}?action=auth`;
         const response = await axios.post(url);
         const quiz_uid = response.data.data.uid;
         // Устанавливаем куку

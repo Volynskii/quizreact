@@ -1,6 +1,8 @@
 import React, {useEffect, useRef} from 'react';
 
-const SubmitButton = ({ onClick, text }) => {
+const SubmitButton = ({ onClick, text, isLoadingButton }) => {
+
+    console.log('is loading button???', isLoadingButton)
 
     const myComponentRef = useRef(null);
 
@@ -17,7 +19,7 @@ const SubmitButton = ({ onClick, text }) => {
 
     return (
         <>
-            <button ref={myComponentRef} className={'submit-button'} onClick={onClick}>{text}</button>
+            <button ref={myComponentRef} className={'submit-button'} onClick={onClick} disabled={isLoadingButton}>{isLoadingButton ? 'Загрузка...': text}</button>
         </>
     );
 };

@@ -173,6 +173,7 @@ input {
   cursor: pointer;
   height: auto;
   width: auto;
+  min-width: 172px;
   text-transform: uppercase;
   box-sizing: border-box;
   display: block;
@@ -215,4 +216,30 @@ input {
 input {
   border: none;
   background: none;
+}
+
+.ya-share2__container_size_m .ya-share2__badge .ya-share2__icon {
+  height: 24px;
+  width: 24px;
+  background-size: 24px 24px;
+}
+
+.ya-share2__badge {
+  border-radius: 4px !important;
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+}
+
+.ya-share2__list.ya-share2__list_direction_horizontal > .ya-share2__item {
+  display: inline-block;
+  vertical-align: top;
+  padding: 0;
+  margin: 2px 4px 0 0;
+}
+
+.vgtrk-widget-quiz__share {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
 }

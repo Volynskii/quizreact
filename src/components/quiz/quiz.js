@@ -14,9 +14,12 @@ import scrollToTop from "../../utils/helpers/scrollTop";
 import Cookies from 'js-cookie';
 import Finish from "../finish/finish";
 import PlayAgain from "../playAgain/playAgain";
+import QuizContainer from "../QuizContainer/QuizContainer";
+import { BASE_URL, socialMedia } from "../../utils/config";
 
 function Quiz({ data }) {
     console.log('data!', data)
+    const [isLoadingButton,setIsLoadingButton] = useState(false)
     const [isPlayAgain,setIsPlayAgain] = useState(false)
     const cookieUid = Cookies.get('quiz_uid');
     const quizId = window.location.pathname.split("/")[1];
@@ -41,6 +44,11 @@ function Quiz({ data }) {
     const HandleFirstQuestion = (question) => {
         setCurrentQuestion(question)
         setIsPlayAgain(false)
+    }
+
+    const HandleFirstQuestion2 = (question) => {
+        setCurrentQuestion(question)
+        setIsFinished(false)
     }
     console.log('current question!', currentQuestion)
 
@@ -81,10 +89,8 @@ function Quiz({ data }) {
             Cookies.set(`quiz_id_${quizId}`, 'start');
         }
         else {
-            // if(Cookies.get(`quiz_id_${quizId}`) !== 'start') {
                 console.log('worked this 2!', currentQuestion)
                 Cookies.set(`quiz_id_${quizId}`, currentQuestion);
-            // }
         }
     }, [currentQuestion]);
 
@@ -100,8 +106,8 @@ function Quiz({ data }) {
 
     const submitAnswer = async (option) => {
         try {
-            setIsLoading(true)
-            const url = 'http://quiz.imolchanov.dev.rfn.ru/';
+            setIsLoadingButton(true)
+            const url = `${BASE_URL}`;
             const response = await sendRequest(url, 'POST', {
                 "quiz_id": quizId,
                 "quest_id": quizData[currentQuestion].id,
@@ -109,7 +115,7 @@ function Quiz({ data }) {
                 "answers[]": option,
                 "action": "answer"
             });
-            setIsLoading(false)
+            setIsLoadingButton(false)
             setCorrectId(response.data.correct[0]);
         } catch (error) {
             console.error('Ошибка отправки ответа:', error);
@@ -118,7 +124,7 @@ function Quiz({ data }) {
 
     const finish = async () => {
         try {
-            const url = 'http://quiz.imolchanov.dev.rfn.ru/';
+            const url = `${BASE_URL}`;
             const post = {
                 "quiz_id": quizId,
                 "uid": cookieUid || uid,
@@ -135,12 +141,23 @@ function Quiz({ data }) {
         }
     };
 
+
+
     const handleNextQuestion = () => {
         setCurrentQuestion(prev => Number(prev) + 1);
         setSelectedOption('');
         setOptionsDisabled(false);
         scrollToTop();
     };
+
+    const getButtonText = () => {
+        if (currentQuestion === questionsLength - 1) {
+            return 'Завершить';
+        } else {
+            return 'Следующий вопрос »';
+        }
+    };
+
 
     if (isLoading) {
         return <LoadingSpinner />;
@@ -151,20 +168,21 @@ function Quiz({ data }) {
     }
 
     if (isFinished) {
-        return <Finish result={result}/>
+        return <Finish result={result} HandleFirstQuestion={HandleFirstQuestion2} socialMedia={socialMedia} />
     }
 
     if (isPlayAgain) {
         return <PlayAgain HandleFirstQuestion={HandleFirstQuestion}/>
     }
 
+
     return (
         <>
             {!isLoading && (
-                <div className="quiz">
-                    <ProgressBar progressBarWidth={progressBarWidth} />
-                    <QuestionPicture imageUrl={quizData[currentQuestion]?.pictures?.sizes?.xw?.url} />
-                    <Question title={quizData[currentQuestion]?.title} />
+                <QuizContainer className={'quiz'}>
+                    <ProgressBar progressBarWidth={progressBarWidth}/>
+                    <QuestionPicture imageUrl={quizData[currentQuestion]?.pictures?.sizes?.xw?.url}/>
+                    <Question title={quizData[currentQuestion]?.title}/>
                     <QuestionAnswersList
                         quizData={quizData}
                         currentQuestion={currentQuestion}
@@ -174,9 +192,15 @@ function Quiz({ data }) {
                         handleSelect={handleSelect}
                     />
                     {selectedOption !== '' && !isLoading && (
-                        <SubmitButton onClick={handleNextQuestion} text={'Следующий вопрос »'} />
+                        <SubmitButton
+                            onClick={currentQuestion === questionsLength - 1 ?
+                            finish :
+                            handleNextQuestion}
+                                      text={getButtonText()}
+                                      isLoadingButton={isLoadingButton}
+                        />
                     )}
-                </div>
+                </QuizContainer>
             )}
         </>
     );
