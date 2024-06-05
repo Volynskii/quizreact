@@ -2,8 +2,6 @@ import React, {useEffect, useRef} from 'react';
 
 const SubmitButton = ({ onClick, text, isLoadingButton }) => {
 
-    console.log('is loading button???', isLoadingButton)
-
     const myComponentRef = useRef(null);
 
     const scrollToComponent = () => {

@@ -5,7 +5,7 @@ const QuestionAnswersList = ({ quizData, currentQuestion, correctId, selectedOpt
 
     return (
         <ul className="question-answers">
-            {quizData[currentQuestion]?.quiz_a.map(({ title, id }, index) => (
+            {quizData[currentQuestion]?.quiz_a.map(({ title, id, pictures }, index) => (
                 <QuestionAnswerItem
                     key={id}
                     id={id}
@@ -15,6 +15,7 @@ const QuestionAnswersList = ({ quizData, currentQuestion, correctId, selectedOpt
                     index={index}
                     optionsDisabled={optionsDisabled}
                     handleSelect={handleSelect}
+                    picture={pictures?.sizes?.bq?.url}
                 />
             ))}
         </ul>

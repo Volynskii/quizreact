@@ -72,7 +72,6 @@ function Quiz({ data }) {
 
     useEffect(() => {
         if (currentQuestion === questionsLength) {
-            console.log('final question!')
             finish();
         }
 
@@ -83,9 +82,6 @@ function Quiz({ data }) {
 
     useEffect(() => {
         if (currentQuestion === questionsLength && quizId) {
-            console.log('final question!')
-            console.log('currentQuestion === questionsLength',currentQuestion === questionsLength)
-            console.log('quizId',quizId)
             Cookies.set(`quiz_id_${quizId}`, 'start');
         }
         else {

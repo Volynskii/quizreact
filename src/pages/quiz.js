@@ -24,6 +24,10 @@ function QuizApp() {
                 const response = await sendRequest(url);
                 const quizData = response.data.quiz_q;
 
+                // Устанавливаем заголовок страницы
+                if (response.data.title) {
+                    document.title = response.data.title;
+                }
 
                 // Проверяем наличие картинок в ответах всех вопросов
                 const hasPictures = quizData.some(question =>
